@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\esdc-simulation-base\esdc-simulation-base.csproj" />
+    <ProjectReference Include="..\sample-scenario\sample-scenario.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>esdc_simulation_api</RootNamespace>
+  </PropertyGroup>
+
+
+</Project>
