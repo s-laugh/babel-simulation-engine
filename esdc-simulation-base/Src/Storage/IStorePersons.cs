@@ -9,5 +9,7 @@ namespace esdc_simulation_base.Src.Storage
     public interface IStorePersons<T> where T : IPerson
     {
         IEnumerable<T> GetAllPersons();
+        void AddPersons(IEnumerable<T> persons);
+        void Clear();
     }
 }
