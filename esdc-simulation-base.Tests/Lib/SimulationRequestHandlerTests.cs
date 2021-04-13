@@ -18,6 +18,7 @@ namespace esdc_simulation_base.Tests.Lib
             // Arrange
             var simulationStore = A.Fake<IStoreSimulations<ISimulationCase>>();
             var personStore = A.Fake<IStorePersons<IPerson>>();
+            var resultStore = A.Fake<IStoreSimulationResults<ISimulationCase>>();
             var runner = A.Fake<IRunSimulations<ISimulationCase, IPerson>>();
             var simulationBuilder = A.Fake<IBuildSimulations<ISimulationCase, ISimulationCaseRequest>>();
 
@@ -31,9 +32,9 @@ namespace esdc_simulation_base.Tests.Lib
             // Act
             var sut = new SimulationRequestHandler<
                 ISimulationCase, 
-                ISimulationCaseRequest, 
+                ISimulationCaseRequest,
                 IPerson>
-                (simulationBuilder, simulationStore, personStore, runner);
+                (simulationBuilder, simulationStore, personStore, resultStore, runner);
 
             var request = new SimulationRequest<ISimulationCaseRequest>();
             
@@ -42,10 +43,10 @@ namespace esdc_simulation_base.Tests.Lib
 
             // Assert
             A.CallTo(() => simulationBuilder.Build(A<SimulationRequest<ISimulationCaseRequest>>._)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => simulationStore.SaveSimulation(A<Simulation<ISimulationCase>>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => simulationStore.Save(A<Simulation<ISimulationCase>>._)).MustHaveHappenedOnceExactly();
             A.CallTo(() => personStore.GetAllPersons()).MustHaveHappenedOnceExactly();
             A.CallTo(() => runner.Run(A<Simulation<ISimulationCase>>._, A<IEnumerable<IPerson>>._)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => simulationStore.StoreResults(testId, A<SimulationResult>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => resultStore.Save(testId, A<SimulationResult>._)).MustHaveHappenedOnceExactly();
             
             Assert.Equal(result, testId);
         }

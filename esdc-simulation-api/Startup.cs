@@ -15,6 +15,7 @@ using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Classes;
 using esdc_simulation_base.Src.Storage;
 using sample_scenario;
+using maternity_benefits;
 
 namespace esdc_simulation_api
 {
@@ -31,8 +32,10 @@ namespace esdc_simulation_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddMemoryCache();
 
             InjectSampleScenario(services);
+            InjectMaternityBenefits(services);
             services.AddScoped<IJoinResults, Joiner>();
         }
 
@@ -72,9 +75,6 @@ namespace esdc_simulation_api
                 >,
                 SampleScenarioSimulationBuilder>(); 
 
-            services.AddScoped<IStorePersons<SampleScenarioPerson>, 
-                SampleScenarioPersonStore>();
-
             services.AddScoped<IRunSimulations<SampleScenarioCase, SampleScenarioPerson>,
                 SimulationRunner<SampleScenarioCase, SampleScenarioPerson>>();
 
@@ -87,7 +87,45 @@ namespace esdc_simulation_api
             //services.AddScoped<IGetSimulations<SampleScenarioCase>, SampleScenarioPerson>();
             //services.AddScoped<ISimulationLib<MotorVehicleSimulationCase>, SimulationLib<MotorVehicleSimulationCase>>();
 
+            // Storage
+            services.AddScoped<IStorePersons<SampleScenarioPerson>, SampleScenarioPersonStore>();
+            services.AddScoped<IStoreSimulationResults<SampleScenarioCase>, SampleScenarioSimulationResultsStore>();
             services.AddScoped<IStoreSimulations<SampleScenarioCase>, SampleScenarioSimulationStore>();
+        }
+
+        private void InjectMaternityBenefits(IServiceCollection services) {
+            services.AddScoped<IHandleSimulationRequests<MaternityBenefitsCaseRequest>, 
+                SimulationRequestHandler<
+                    MaternityBenefitsCase, 
+                    MaternityBenefitsCaseRequest, 
+                    MaternityBenefitsPerson
+                >
+            >();
+
+            services.AddScoped<
+                IBuildSimulations<
+                    MaternityBenefitsCase, 
+                    MaternityBenefitsCaseRequest
+                >,
+                MaternityBenefitsSimulationBuilder>(); 
+
+            services.AddScoped<IRunSimulations<MaternityBenefitsCase, MaternityBenefitsPerson>,
+                SimulationRunner<MaternityBenefitsCase, MaternityBenefitsPerson>>();
+
+            services.AddScoped<IRunCases<MaternityBenefitsCase, MaternityBenefitsPerson>, 
+                CaseRunner<MaternityBenefitsCase, MaternityBenefitsPerson>>();
+
+            services.AddScoped<IExecuteRules<MaternityBenefitsCase, MaternityBenefitsPerson>,
+                MaternityBenefitsExecutor>();
+
+            //services.AddScoped<IGetSimulations<SampleScenarioCase>, SampleScenarioPerson>();
+            //services.AddScoped<ISimulationLib<MotorVehicleSimulationCase>, SimulationLib<MotorVehicleSimulationCase>>();
+
+            // Storage
+            services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonStore>();
+            services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationStore>();
+            services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsStore>();
+            services.AddScoped<IStoreUnemploymentRegions, UnemploymentRegionStore>();
         }
     }
 }
