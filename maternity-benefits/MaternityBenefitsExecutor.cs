@@ -1,24 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using esdc_simulation_base.Src.Lib;
+using esdc_simulation_base.Src.Rules;
+using maternity_benefits.Rules;
 
 namespace maternity_benefits
 {
     public class MaternityBenefitsExecutor : IExecuteRules<MaternityBenefitsCase, MaternityBenefitsPerson>
     {
+        private readonly IRulesEngine<MaternityBenefitsRulesRequest> _rulesApi;
+        private static readonly string ENDPOINT = "MaternityBenefits";
+        public MaternityBenefitsExecutor(IRulesEngine<MaternityBenefitsRulesRequest> rulesApi) {
+            _rulesApi = rulesApi;
+        }
+
         public decimal Execute(MaternityBenefitsCase simulationCase, MaternityBenefitsPerson person) {
-            var bestWeeksDict = simulationCase.RegionDict.ToDictionary(x => x.Key, x => x.Value.BestWeeks);
-            
-            int bestWeeks = bestWeeksDict[person.UnemploymentRegion.Id];
-            decimal averageIncome = person.GetAverageIncome(bestWeeks); 
-
-            decimal temp = averageIncome * (decimal)simulationCase.Percentage/100;
-            temp = Math.Min(temp, simulationCase.MaxWeeklyAmount);
-            decimal amount = temp * simulationCase.NumWeeks;
-
-            return amount;
+            var rulesReq = new MaternityBenefitsRulesRequest() {
+                Rule = new MaternityBenefitsRule(simulationCase),
+                Person = new MaternityBenefitsRulePerson(person)
+            };
+            return _rulesApi.Execute<decimal>(ENDPOINT, rulesReq);
         }
     }
 }

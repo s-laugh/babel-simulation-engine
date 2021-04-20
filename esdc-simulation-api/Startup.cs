@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,12 +7,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using RestSharp;
 
 using esdc_simulation_base.Src.Lib;
-using esdc_simulation_base.Src.Classes;
 using esdc_simulation_base.Src.Storage;
+using esdc_simulation_base.Src.Rules;
+
 using sample_scenario;
+using sample_scenario.Rules;
+
 using maternity_benefits;
+using maternity_benefits.Rules;
 
 namespace esdc_simulation_api
 {
@@ -36,7 +39,18 @@ namespace esdc_simulation_api
 
             InjectSampleScenario(services);
             InjectMaternityBenefits(services);
+            
             services.AddScoped<IJoinResults, Joiner>();
+            
+            services.AddScoped<IRestClient, RestSharp.RestClient>();
+
+            // OpenFisca options
+            var rulesUrl = Configuration["RulesOptions:Url"];
+            var rulesOptions = new RulesOptions() {
+                Url = rulesUrl
+            };
+            services.AddSingleton<IOptions<RulesOptions>>(x => Options.Create(rulesOptions));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,8 +98,7 @@ namespace esdc_simulation_api
             services.AddScoped<IExecuteRules<SampleScenarioCase, SampleScenarioPerson>,
                 SampleScenarioExecutor>();
 
-            //services.AddScoped<IGetSimulations<SampleScenarioCase>, SampleScenarioPerson>();
-            //services.AddScoped<ISimulationLib<MotorVehicleSimulationCase>, SimulationLib<MotorVehicleSimulationCase>>();
+            services.AddScoped<IRulesEngine<SampleScenarioRulesRequest>, RulesApi<SampleScenarioRulesRequest>>();
 
             // Storage
             services.AddScoped<IStorePersons<SampleScenarioPerson>, SampleScenarioPersonStore>();
@@ -100,6 +113,10 @@ namespace esdc_simulation_api
                     MaternityBenefitsCaseRequest, 
                     MaternityBenefitsPerson
                 >
+            >();
+
+            services.AddScoped<IHandlePersonCreationRequests<MaternityBenefitsPersonRequest>, 
+                MaternityBenefitPersonCreationRequestHandler
             >();
 
             services.AddScoped<
@@ -118,8 +135,7 @@ namespace esdc_simulation_api
             services.AddScoped<IExecuteRules<MaternityBenefitsCase, MaternityBenefitsPerson>,
                 MaternityBenefitsExecutor>();
 
-            //services.AddScoped<IGetSimulations<SampleScenarioCase>, SampleScenarioPerson>();
-            //services.AddScoped<ISimulationLib<MotorVehicleSimulationCase>, SimulationLib<MotorVehicleSimulationCase>>();
+            services.AddScoped<IRulesEngine<MaternityBenefitsRulesRequest>, RulesApi<MaternityBenefitsRulesRequest>>();
 
             // Storage
             services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonStore>();

@@ -17,6 +17,7 @@ namespace esdc_simulation_api.Controllers
     public class MaternityBenefitsController : ControllerBase
     {
         private readonly IHandleSimulationRequests<MaternityBenefitsCaseRequest> _requestHandler;
+        private readonly IHandlePersonCreationRequests<MaternityBenefitsPersonRequest> _personRequestHandler;
         private readonly IStorePersons<MaternityBenefitsPerson> _personStore;
         private readonly IStoreSimulations<MaternityBenefitsCase> _simulationStore;
         private readonly IStoreSimulationResults<MaternityBenefitsCase> _resultStore;
@@ -24,6 +25,7 @@ namespace esdc_simulation_api.Controllers
 
         public MaternityBenefitsController(
             IHandleSimulationRequests<MaternityBenefitsCaseRequest> requestHandler,
+            IHandlePersonCreationRequests<MaternityBenefitsPersonRequest> personRequestHandler,
             IStoreSimulations<MaternityBenefitsCase> simulationStore,
             IStorePersons<MaternityBenefitsPerson> personStore,
             IStoreSimulationResults<MaternityBenefitsCase> resultStore,
@@ -31,6 +33,7 @@ namespace esdc_simulation_api.Controllers
         )
         {
             _requestHandler = requestHandler;
+            _personRequestHandler = personRequestHandler;
             _simulationStore = simulationStore;
             _personStore = personStore;
             _resultStore = resultStore;
@@ -56,27 +59,17 @@ namespace esdc_simulation_api.Controllers
         [HttpGet("Persons")]
         public IEnumerable<MaternityBenefitsPerson> GetPersons()
         {
+            // TODO: This may end up being too big a response. Maybe a summary?
             var persons = _personStore.GetAllPersons();
             return persons;
         }
 
-        // TODO: This may end up being too big a response. Maybe a summary?
+        
         [HttpPost("Persons")]
         public void AddPersons(List<MaternityBenefitsPersonRequest> personsRequest)
         {
-            // TODO: Maybe this should go in a separate handler as well
-            var unemploymentRegions = _regionStore.GetUnemploymentRegions();
-            var regionDict = unemploymentRegions.ToDictionary(x => x.Id);
-
-            var persons = personsRequest.Select(x => new MaternityBenefitsPerson() {
-                Id = Guid.NewGuid(),
-                WeeklyIncome = x.WeeklyIncome,
-                UnemploymentRegion = regionDict[x.UnemploymentRegionId],
-                Flsah = x.Flsah,
-                Age = x.Age
-            });
-
-            _personStore.AddPersons(persons);
+            _personRequestHandler.Handle(personsRequest);
+            return;
         }
 
         [HttpDelete("Persons")]
