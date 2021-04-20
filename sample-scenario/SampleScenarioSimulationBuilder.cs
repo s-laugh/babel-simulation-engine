@@ -8,11 +8,8 @@ namespace sample_scenario
     public class SampleScenarioSimulationBuilder : IBuildSimulations<SampleScenarioCase, SampleScenarioCaseRequest>
     {
         public Simulation<SampleScenarioCase> Build(SimulationRequest<SampleScenarioCaseRequest> simulationRequest) {
-            var baseCase = (SampleScenarioCase)simulationRequest.BaseCaseRequest;
-            baseCase.Id = Guid.NewGuid();
-
-            var variantCase = (SampleScenarioCase)simulationRequest.VariantCaseRequest;
-            variantCase.Id = Guid.NewGuid();
+            var baseCase = new SampleScenarioCase(simulationRequest.BaseCaseRequest);
+            var variantCase = new SampleScenarioCase(simulationRequest.VariantCaseRequest);
 
             return new Simulation<SampleScenarioCase>() {
                 Id = Guid.NewGuid(),

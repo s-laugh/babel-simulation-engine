@@ -61,8 +61,7 @@ namespace esdc_simulation_api.Controllers
         [HttpPost("Persons")]
         public void AddPersons(List<SampleScenarioPerson> persons)
         {
-            // TODO: Like with MB, may want person request
-            // And then it uses a separate handler
+            // TODO: Like with MB, may want a separate handler
             _personStore.AddPersons(persons);
         }
 
@@ -77,6 +76,20 @@ namespace esdc_simulation_api.Controllers
         {
             var result = _resultStore.Get(simulationId);
             return result;
+        }
+
+        [HttpGet("Mock")]
+        public string MockSetup()
+        {   
+            _personStore.Clear();
+
+            var person = new SampleScenarioPerson() {
+                Id = Guid.NewGuid()
+            };
+
+            _personStore.AddPersons(new List<SampleScenarioPerson>() { person });
+
+            return "OK";
         }
     }
 }

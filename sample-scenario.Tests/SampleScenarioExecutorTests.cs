@@ -5,6 +5,9 @@ using System.Linq;
 using Xunit;
 using FakeItEasy;
 
+using esdc_simulation_base.Src.Rules;
+using sample_scenario.Rules;
+
 namespace sample_scenario.Tests
 {
     public class SampleScenarioExecutorTests
@@ -15,9 +18,11 @@ namespace sample_scenario.Tests
         {
             // Arrange
             decimal fakeResult = 0;
+
+            var rulesApi = A.Fake<IRulesEngine<SampleScenarioRulesRequest>>();
             
             // Act
-            var sut = new SampleScenarioExecutor();
+            var sut = new SampleScenarioExecutor(rulesApi);
 
             var simulationCase = A.Fake<SampleScenarioCase>();
             var person = new SampleScenarioPerson();

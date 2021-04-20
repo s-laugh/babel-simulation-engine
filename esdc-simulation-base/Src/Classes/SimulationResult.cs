@@ -13,7 +13,7 @@ namespace esdc_simulation_base.Src.Classes
             PersonResults = new List<PersonResult>();
         }
 
-        // TODO: Maybe add this back in?
+        // TODO: Add this back in eventually
         // public int TotalGainers {   
         //     get {
         //         return PersonResults.Count(x => x.VariantAmount > x.BaseAmount);
