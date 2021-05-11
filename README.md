@@ -55,5 +55,16 @@ This is the executable web-api project that exposes the functionality of the oth
 ### maternity-benefits
 This is a concrete example of a class library that implements the interfaces specified in the base library.
 
+## Development
 
+### Running Locally
+
+- `cd` into the solution folder
+- `dotnet run --project esdc-simulation-api`
+
+Note: If running this project locally alongside related web APIs, ensure you are specifying the projects to run on separate ports in the launchSettings.json file
+
+### Testing
+
+Tests are set up for the base library and the two scenario class libraries (sampleScenario and maternityBenefits). Running `dotnet test` will run the tests for all three test projects
 
