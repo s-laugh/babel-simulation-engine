@@ -64,6 +64,11 @@ This is a concrete example of a class library that implements the interfaces spe
 
 Note: If running this project locally alongside related web APIs, ensure you are specifying the projects to run on separate ports in the launchSettings.json file
 
+### Running in Docker
+
+- `docker build -t babel-simulation-engine .`
+- `docker run -it --rm -p 7000:80 babel-simulation-engine`
+
 ### Testing
 
 Tests are set up for the base library and the two scenario class libraries (sampleScenario and maternityBenefits). Running `dotnet test` will run the tests for all three test projects
