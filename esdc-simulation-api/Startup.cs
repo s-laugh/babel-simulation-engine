@@ -44,8 +44,10 @@ namespace esdc_simulation_api
             
             services.AddScoped<IRestClient, RestSharp.RestClient>();
 
-            // OpenFisca options
-            var rulesUrl = Configuration["RulesOptions:Url"];
+            // Rules options
+            var rulesUrl = Configuration["RulesOptions:Url"] ?? 
+                Environment.GetEnvironmentVariable("rulesUrl");
+
             var rulesOptions = new RulesOptions() {
                 Url = rulesUrl
             };
