@@ -10,6 +10,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RestSharp;
 
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.IO;
+
 using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Storage;
 using esdc_simulation_base.Src.Rules;
@@ -35,6 +39,23 @@ namespace esdc_simulation_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Maternity Benefit Simulation API",
+                    Description = "...",
+                    TermsOfService = new Uri("https://example.com/terms")
+                });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
             services.AddMemoryCache();
 
             InjectSampleScenario(services);
@@ -58,6 +79,16 @@ namespace esdc_simulation_api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/spec.json", "Maternity Benefit Simulation API Spec");
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
