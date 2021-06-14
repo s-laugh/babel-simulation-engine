@@ -1,0 +1,39 @@
+image:
+  repository: decdendc.azurecr.io/babelrulesengine
+  tag: "{{ requiredEnv "DOCKER_TAG" }}" 
+  pullPolicy: Always
+
+extraEnv:
+  - name: NOTIFY_BASE_API_URL
+    value: "https://api.notification.canada.ca"
+  - name: REPORT_A_PROBLEM_ENABLED
+    value: "true"
+  - name: NOTIFY_API_KEY
+    value: {{ requiredEnv "NOTIFY_API_KEY" | quote }}
+  - name: NOTIFY_REPORT_A_PROBLEM_EMAIL
+    value: {{ requiredEnv "NOTIFY_REPORT_A_PROBLEM_EMAIL" | quote }}
+  - name: NOTIFY_REPORT_A_PROBLEM_TEMPLATE_ID
+    value: {{ requiredEnv "NOTIFY_REPORT_A_PROBLEM_TEMPLATE_ID" | quote }}
+
+ingress:
+      enabled: true
+      hosts:
+      {{- if or (eq .Environment.Name "prod-blue") (eq .Environment.Name "prod-green") }}
+          - babelrulesengine.{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN" }}
+          - babelrulesengine.{{ requiredEnv "BASE_DOMAIN" }}
+      {{ else }}
+          - babelrulesengine-{{ .Environment.Name }}.{{ requiredEnv "BASE_DOMAIN_DEV" }}
+          - babelrulesengine.{{ requiredEnv "BASE_DOMAIN_DEV" }}
+      {{ end }} 
+      annotations: {}
+      # kubernetes.io/ingress.class: traefik
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+livenessDelay: 60
+readinessDelay: 60
+livenessPath: /
+readinessPath: /
+port: 3000

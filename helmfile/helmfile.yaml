@@ -1,0 +1,64 @@
+repositories:
+    - name: dts
+      url: https://helm.dts-stn.com
+    # helm-git powered repository: You can treat any Git repository as a charts repository
+    - name: babel-simulation-engine
+      url: git+https://{{ requiredEnv "GITHUB_USER" }}:{{ requiredEnv "GITHUB_TOKEN" }}@github.com/DTS-STN/babel-simulation-engine@helm/charts?ref=helm
+    - name: babel-rules-engine
+      url: git+https://{{ requiredEnv "GITHUB_USER" }}:{{ requiredEnv "GITHUB_TOKEN" }}@github.com/DTS-STN/babel-rules-engine@helm/charts?ref=helm
+    - name: babel-openfisca-engine
+      url: git+https://{{ requiredEnv "GITHUB_USER" }}:{{ requiredEnv "GITHUB_TOKEN" }}@github.com/DTS-STN/babel-openfisca-engine@helm/charts?ref=helm
+
+context: ESdCDPSBDMK8SDev-K8S
+   
+environments:
+    #USING INT, MAIN AND SPRINT TO REFLECT OUR INTEGRATION (PR VERSION), MAIN (REFLECTING MAIN BRANCH), SPRINT (STATIC RELEASE VERSION FOR SPRINT REVIEW)
+    int:
+    main:
+    sprint:
+
+releases:
+# babel-simulation-engine
+  - name: babel-simulation-engine-{{ .Environment.Name }}
+    chart: ../helm/charts/alphasite
+    version: 0.0.1
+    values:
+      - overrides/babel-simulation-engine.yaml.gotmpl
+    labels:
+        category: bdm
+        app: rules
+        tier: simulation
+    namespace: rules-{{ .Environment.Name }}
+    installed: true
+    wait: false
+    force: false
+
+# babel-rules-engine
+  - name: babel-rules-engine-{{ .Environment.Name }}
+    chart: ../helm/charts/alphasite
+    version: 0.0.1
+    values:
+      - overrides/babel-rules-engine.yaml.gotmpl
+    labels:
+        category: bdm
+        app: rules
+        tier: rules
+    namespace: rules-{{ .Environment.Name }}
+    installed: true
+    wait: false
+    force: false
+
+# babel-openfisca-engine
+  - name: babel-openfisca-engine-{{ .Environment.Name }}
+    chart: ../helm/charts/alphasite
+    version: 0.0.1
+    values:
+      - overrides/babel-openfisca-engine.yaml.gotmpl
+    labels:
+        category: bdm
+        app: rules
+        tier: openfisca
+    namespace: rules-{{ .Environment.Name }}
+    installed: true
+    wait: false
+    force: false
