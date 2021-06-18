@@ -16,19 +16,10 @@ namespace maternity_benefits.Tests
         public void ShouldWorkNormally()
         {
             // Arrange
-            var regionStore = A.Fake<IStoreUnemploymentRegions>();
-            var testRegionId = Guid.NewGuid();
-
-            var fakeRegion = new UnemploymentRegion() {
-                Id = testRegionId,
-                Name = "Test Region"
-            };
-
-            var fakeRegions = new List<UnemploymentRegion>() { fakeRegion };
-            A.CallTo(() => regionStore.GetUnemploymentRegions()).Returns(fakeRegions);
+            var testName = "Simulation Name";
 
             // Act
-            var sut = new MaternityBenefitsSimulationBuilder(regionStore);
+            var sut = new MaternityBenefitsSimulationBuilder();
 
             var req = new SimulationRequest<MaternityBenefitsCaseRequest>() {
                 VariantCaseRequest = new MaternityBenefitsCaseRequest() {
@@ -41,15 +32,13 @@ namespace maternity_benefits.Tests
                     MaxWeeklyAmount = 6,
                     Percentage = 100
                 }, 
-                SimulationName = "Test Simulation"
+                SimulationName = testName
             };
             
             var result = sut.Build(req);
 
             // Assert
-            Assert.Equal("Test Region", result.BaseCase.RegionDict[testRegionId].Name);
-            Assert.Equal("Test Region", result.VariantCase.RegionDict[testRegionId].Name);
-            Assert.Equal("Test Simulation", result.Name);
+            Assert.Equal(testName, result.Name);
         }
     }
 }

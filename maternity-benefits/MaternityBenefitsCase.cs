@@ -8,18 +8,15 @@ namespace maternity_benefits
     public class MaternityBenefitsCase : MaternityBenefitsCaseRequest, ISimulationCase
     {
         public Guid Id { get; set; }
-        public Dictionary<Guid, UnemploymentRegion> RegionDict { get; set; }
 
         public MaternityBenefitsCase() : base() {
-            RegionDict = new Dictionary<Guid, UnemploymentRegion>();
         }
 
-        public MaternityBenefitsCase(MaternityBenefitsCaseRequest request, Dictionary<Guid, UnemploymentRegion> regionDict) {
+        public MaternityBenefitsCase(MaternityBenefitsCaseRequest request) {
             Id = Guid.NewGuid();
             NumWeeks = request.NumWeeks;
             MaxWeeklyAmount = request.MaxWeeklyAmount;
             Percentage = request.Percentage;
-            RegionDict = regionDict;  
         }
     }
 }

@@ -8,10 +8,9 @@ namespace maternity_benefits
 {
     public class MaternityBenefitsPersonRequest : IPersonRequest
     {
-        public Guid UnemploymentRegionId { get; set; }
         public int Age { get; set; }
         public string Flsah { get; set; }
-        public List<WeeklyIncome> WeeklyIncome { get; set; }
+        public decimal AverageIncome { get; set; }
     }
 
     

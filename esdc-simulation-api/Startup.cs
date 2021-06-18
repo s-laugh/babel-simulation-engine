@@ -174,7 +174,6 @@ namespace esdc_simulation_api
             services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonStore>();
             services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationStore>();
             services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsStore>();
-            services.AddScoped<IStoreUnemploymentRegions, UnemploymentRegionStore>();
         }
     }
 }
