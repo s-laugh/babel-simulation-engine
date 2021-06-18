@@ -21,15 +21,13 @@ namespace esdc_simulation_api.Controllers
         private readonly IStorePersons<MaternityBenefitsPerson> _personStore;
         private readonly IStoreSimulations<MaternityBenefitsCase> _simulationStore;
         private readonly IStoreSimulationResults<MaternityBenefitsCase> _resultStore;
-        private readonly IStoreUnemploymentRegions _regionStore;
 
         public MaternityBenefitsController(
             IHandleSimulationRequests<MaternityBenefitsCaseRequest> requestHandler,
             IHandlePersonCreationRequests<MaternityBenefitsPersonRequest> personRequestHandler,
             IStoreSimulations<MaternityBenefitsCase> simulationStore,
             IStorePersons<MaternityBenefitsPerson> personStore,
-            IStoreSimulationResults<MaternityBenefitsCase> resultStore,
-            IStoreUnemploymentRegions regionStore
+            IStoreSimulationResults<MaternityBenefitsCase> resultStore
         )
         {
             _requestHandler = requestHandler;
@@ -37,7 +35,6 @@ namespace esdc_simulation_api.Controllers
             _simulationStore = simulationStore;
             _personStore = personStore;
             _resultStore = resultStore;
-            _regionStore = regionStore;
         }
 
         [HttpGet("{simulationId}")]
@@ -88,24 +85,12 @@ namespace esdc_simulation_api.Controllers
 
         ///// Custom
 
-        // TODO: May need a POST here as well
-        [HttpGet("UnemploymentRegions")]
-        public IEnumerable<UnemploymentRegion> GetUnemploymentRegions()
-        {
-            var regions = _regionStore.GetUnemploymentRegions();
-            return regions;
-        }
-
         [HttpGet("Mock")]
         public string MockSetup()
         {   
             _personStore.Clear();
-            _regionStore.Clear();
 
-            var regions = MockCreator.GetUnemploymentRegions();
-            _regionStore.AddUnemploymentRegions(regions);
-
-            var persons = MockCreator.GeneratePersons(regions.ToList(), 100);
+            var persons = MockCreator.GeneratePersons(100);
             _personStore.AddPersons(persons);
 
             return "OK";
