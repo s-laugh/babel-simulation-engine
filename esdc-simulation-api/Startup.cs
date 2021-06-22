@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore.SqlServer;
+using Microsoft.EntityFrameworkCore;
 using RestSharp;
 
 using Microsoft.OpenApi.Models;
@@ -23,6 +25,8 @@ using sample_scenario.Rules;
 
 using maternity_benefits;
 using maternity_benefits.Rules;
+using maternity_benefits.Storage.EF;
+using maternity_benefits.Storage.EF.Store;
 
 namespace esdc_simulation_api
 {
@@ -74,11 +78,23 @@ namespace esdc_simulation_api
             };
             services.AddSingleton<IOptions<RulesOptions>>(x => Options.Create(rulesOptions));
 
+            // DB injection
+            string connectionString = Configuration.GetConnectionString("DefaultDB");
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("esdc-simulation-api")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Apply migrations in prod
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+                {
+                    context.Database.Migrate();
+                }
+            }
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -170,10 +186,16 @@ namespace esdc_simulation_api
 
             services.AddScoped<IRulesEngine<MaternityBenefitsRulesRequest>, RulesApi<MaternityBenefitsRulesRequest>>();
 
-            // Storage
-            services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonStore>();
-            services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationStore>();
-            services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsStore>();
+            // EF Storage
+            services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonEFStore>();
+            services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationEFStore>();
+            services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsEFStore>();
+            
+            // Cache Storage
+            // services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonStore>();
+            // services.AddScoped<IStoreSimulations<MaternityBenefitsCase>, MaternityBenefitsSimulationStore>();
+            // services.AddScoped<IStoreSimulationResults<MaternityBenefitsCase>, MaternityBenefitsSimulationResultsStore>();
         }
+
     }
 }
