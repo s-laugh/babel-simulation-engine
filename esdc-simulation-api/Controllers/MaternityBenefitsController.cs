@@ -9,6 +9,7 @@ using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Classes;
 using esdc_simulation_base.Src.Storage;
 using maternity_benefits;
+using maternity_benefits.Storage.Mock;
 
 namespace esdc_simulation_api.Controllers
 {
@@ -84,16 +85,20 @@ namespace esdc_simulation_api.Controllers
 
 
         ///// Custom
+        // TODO: Add a toggle/config//auth on here for more control
 
         [HttpGet("Mock")]
         public string MockSetup()
         {   
-            _personStore.Clear();
+            var persons = _personStore.GetAllPersons();
+            if (persons.Count() > 0) {
+                throw new Exception("DB is populated. Cannot generate mocks.");
+            }
 
-            var persons = MockCreator.GeneratePersons(100);
-            _personStore.AddPersons(persons);
+            var mockPersons = MockCreator.GetMockPersons(100);
+            _personStore.AddPersons(mockPersons);
 
-            return "OK";
+            return "Mocks generated";
         }
 
     }

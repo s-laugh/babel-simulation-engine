@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using esdc_simulation_base.Src.Classes;
 using esdc_simulation_base.Src.Storage;
 
-namespace maternity_benefits
+namespace maternity_benefits.Storage.Cache
 {
     public class MaternityBenefitsSimulationResultsStore : IStoreSimulationResults<MaternityBenefitsCase>
     {
