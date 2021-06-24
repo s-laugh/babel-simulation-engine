@@ -5,6 +5,7 @@ using maternity_benefits;
 
 namespace esdc_simulation_api
 {
+    // TODO: Do some renaming here. Its confusing
     public class MaternityBenefitsSimulationResponse
     {
         public Guid Id { get; set; }

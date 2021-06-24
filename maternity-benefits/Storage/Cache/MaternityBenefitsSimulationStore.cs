@@ -25,6 +25,11 @@ namespace maternity_benefits.Storage.Cache
             return _cache.Get<Simulation<MaternityBenefitsCase>>($"{cacheKeyBase}_{simulationId}");
         }
 
+        public List<Simulation<MaternityBenefitsCase>> GetAll() {
+            // TODO:
+            throw new NotImplementedException();
+        }
+
         public void Delete(Guid simulationId) {
            _cache.Remove($"{cacheKeyBase}_{simulationId}");
         }

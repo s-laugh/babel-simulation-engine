@@ -25,6 +25,10 @@ namespace sample_scenario
            return _cache.Get<Simulation<SampleScenarioCase>>($"{cacheKeyBase}_{simulationId}");
         }
 
+        public List<Simulation<SampleScenarioCase>> GetAll() {
+            throw new NotImplementedException();
+        }
+
         public void Delete(Guid simulationId) {
             _cache.Remove($"{cacheKeyBase}_{simulationId}");
         }

@@ -32,6 +32,15 @@ namespace maternity_benefits.Storage.EF.Store
             return ConvertFromDb(dbModel);
         }
 
+        public List<Simulation<MaternityBenefitsCase>> GetAll() {
+            return _context.Simulations
+                .AsNoTracking()
+                .Include(x => x.BaseCase)
+                .Include(x => x.VariantCase)
+                .Select(x => ConvertFromDb(x))
+                .ToList();
+        }
+
         // TODO: May want a soft-delete
         public void Delete(Guid simulationId) {
             var objectToRemove = _context.Simulations

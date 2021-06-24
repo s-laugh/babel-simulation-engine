@@ -18,23 +18,17 @@ namespace esdc_simulation_api.Controllers
     public class MaternityBenefitsController : ControllerBase
     {
         private readonly IHandleSimulationRequests<MaternityBenefitsCaseRequest> _requestHandler;
-        private readonly IHandlePersonCreationRequests<MaternityBenefitsPersonRequest> _personRequestHandler;
-        private readonly IStorePersons<MaternityBenefitsPerson> _personStore;
         private readonly IStoreSimulations<MaternityBenefitsCase> _simulationStore;
         private readonly IStoreSimulationResults<MaternityBenefitsCase> _resultStore;
 
         public MaternityBenefitsController(
             IHandleSimulationRequests<MaternityBenefitsCaseRequest> requestHandler,
-            IHandlePersonCreationRequests<MaternityBenefitsPersonRequest> personRequestHandler,
             IStoreSimulations<MaternityBenefitsCase> simulationStore,
-            IStorePersons<MaternityBenefitsPerson> personStore,
             IStoreSimulationResults<MaternityBenefitsCase> resultStore
         )
         {
             _requestHandler = requestHandler;
-            _personRequestHandler = personRequestHandler;
             _simulationStore = simulationStore;
-            _personStore = personStore;
             _resultStore = resultStore;
         }
 
@@ -43,6 +37,19 @@ namespace esdc_simulation_api.Controllers
         {
             var simulation = _simulationStore.Get(simulationId);
             return new MaternityBenefitsSimulationResponse(simulation);
+        }
+
+        [HttpGet]
+        public AllSimulationsResponse GetAllSimulations()
+        {
+            var result = new List<MaternityBenefitsSimulationResponse>();
+            var simulations = _simulationStore.GetAll();
+            foreach (var sim in simulations) {
+                result.Add(new MaternityBenefitsSimulationResponse(sim));
+            }
+            return new AllSimulationsResponse() {
+                Simulations = result
+            };
         }
 
         [HttpPost]
@@ -54,52 +61,27 @@ namespace esdc_simulation_api.Controllers
             };
         }
 
-        [HttpGet("Persons")]
-        public IEnumerable<MaternityBenefitsPerson> GetPersons()
-        {
-            // TODO: This may end up being too big a response. Maybe a summary?
-            var persons = _personStore.GetAllPersons();
-            return persons;
-        }
-
-        
-        [HttpPost("Persons")]
-        public void AddPersons(List<MaternityBenefitsPersonRequest> personsRequest)
-        {
-            _personRequestHandler.Handle(personsRequest);
-            return;
-        }
-
-        [HttpDelete("Persons")]
-        public void DeletePersons()
-        {
-            _personStore.Clear();
-        }
+        // [HttpGet("{simulationId}/Results")]
+        // public SimulationResult GetResult(Guid simulationId)
+        // {
+        //     var result = _resultStore.Get(simulationId);
+        //     return result;
+        // }
 
         [HttpGet("{simulationId}/Results")]
-        public SimulationResult GetResult(Guid simulationId)
+        public SimulationResultResponse GetFullResult(Guid simulationId)
         {
+            var simulation = _simulationStore.Get(simulationId);
             var result = _resultStore.Get(simulationId);
-            return result;
+
+            return new SimulationResultResponse() {
+                Simulation = new MaternityBenefitsSimulationResponse(simulation),
+                Result = new MaternityBenefitsSimulationResult(result)
+
+            };
         }
 
-
-        ///// Custom
-        // TODO: Add a toggle/config//auth on here for more control
-
-        [HttpGet("Mock")]
-        public string MockSetup()
-        {   
-            var persons = _personStore.GetAllPersons();
-            if (persons.Count() > 0) {
-                throw new Exception("DB is populated. Cannot generate mocks.");
-            }
-
-            var mockPersons = MockCreator.GetMockPersons(100);
-            _personStore.AddPersons(mockPersons);
-
-            return "Mocks generated";
-        }
+        // TODO: Need a delete
 
     }
 }
