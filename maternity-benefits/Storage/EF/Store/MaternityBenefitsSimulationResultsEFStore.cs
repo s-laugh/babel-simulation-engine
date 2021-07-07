@@ -27,7 +27,7 @@ namespace maternity_benefits.Storage.EF.Store
             var dbModel = _context.SimulationResults
                 .AsNoTracking()
                 .Include(x => x.PersonResults)
-                .ThenInclude(x => x.MaternityBenefitsPerson)
+                .ThenInclude(x => x.Person)
                 .First(x => x.SimulationId == simulationId);
             
             return ConvertFromDb(dbModel);
@@ -55,20 +55,20 @@ namespace maternity_benefits.Storage.EF.Store
             };
         }
 
-        public EFModels.PersonResult ConvertToDb(PersonResult model) {
-            return new EFModels.PersonResult() {
-                MaternityBenefitsPersonId = model.Person.Id,
+        public EFModels.MaternityBenefitsPersonResult ConvertToDb(PersonResult model) {
+            return new EFModels.MaternityBenefitsPersonResult() {
+                PersonId = model.Person.Id,
                 //MaternityBenefitsPerson = MaternityBenefitsPersonEFStore.ConvertToDb((MaternityBenefitsPerson)model.Person),
                 BaseAmount = model.BaseAmount,
                 VariantAmount = model.VariantAmount
             };
         }
 
-        public PersonResult ConvertFromDb(EFModels.PersonResult dbModel) {
+        public PersonResult ConvertFromDb(EFModels.MaternityBenefitsPersonResult dbModel) {
             return new PersonResult() {
                 BaseAmount = dbModel.BaseAmount,
                 VariantAmount = dbModel.VariantAmount,
-                Person = MaternityBenefitsPersonEFStore.ConvertFromDb(dbModel.MaternityBenefitsPerson)
+                Person = MaternityBenefitsPersonEFStore.ConvertFromDb(dbModel.Person)
             };
         }
     }

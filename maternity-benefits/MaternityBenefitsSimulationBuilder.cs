@@ -5,8 +5,11 @@ using System.Linq;
 using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Classes;
 
+using esdc_simulation_classes.MaternityBenefits;
+
 namespace maternity_benefits
 {
+    // TODO: Destroy this class. It's annoying and useless
     public class MaternityBenefitsSimulationBuilder : IBuildSimulations<MaternityBenefitsCase, MaternityBenefitsCaseRequest>
     {
         public Simulation<MaternityBenefitsCase> Build(SimulationRequest<MaternityBenefitsCaseRequest> simulationRequest) {

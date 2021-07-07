@@ -2,8 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\esdc-simulation-base\esdc-simulation-base.csproj" />
-    <ProjectReference Include="..\sample-scenario\sample-scenario.csproj" />
     <ProjectReference Include="..\maternity-benefits\maternity-benefits.csproj" />
+    <ProjectReference Include="..\esdc-simulation-classes\esdc-simulation-classes.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

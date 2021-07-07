@@ -2,7 +2,7 @@
 
 using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Rules;
-using maternity_benefits.Rules;
+using Rule = esdc_rules_classes.MaternityBenefits;
 
 namespace maternity_benefits
 {
@@ -15,10 +15,19 @@ namespace maternity_benefits
         }
 
         public decimal Execute(MaternityBenefitsCase simulationCase, MaternityBenefitsPerson person) {
-            var rulesReq = new MaternityBenefitsRulesRequest() {
-                Rule = new MaternityBenefitsRule(simulationCase),
-                Person = new MaternityBenefitsRulePerson(person)
+            var rule = new Rule.MaternityBenefitsCase() {
+                NumWeeks = simulationCase.NumWeeks,
+                MaxWeeklyAmount = simulationCase.MaxWeeklyAmount,
+                Percentage = simulationCase.Percentage
             };
+            var rulePerson = new Rule.MaternityBenefitsPerson() {
+                AverageIncome = person.AverageIncome
+            };
+            var rulesReq = new MaternityBenefitsRulesRequest() {
+                Rule = rule,
+                Person = rulePerson
+            };
+            
             return _rulesApi.Execute<decimal>(ENDPOINT, rulesReq);
         }
     }

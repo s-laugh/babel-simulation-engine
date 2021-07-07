@@ -22,7 +22,9 @@ namespace maternity_benefits.Storage.Mock
             return new MaternityBenefitsPerson() {
                 Id = Guid.NewGuid(),
                 Age = GenerateAge(),
-                Flsah = GenerateFlsah(),
+                SpokenLanguage = GenerateSpokenLanguage(),
+                EducationLevel = GenerateEducationLevel(),
+                Province = GenerateProvince(),
                 AverageIncome = GenerateIncome()
             };
         }
@@ -32,7 +34,7 @@ namespace maternity_benefits.Storage.Mock
             return rnd.Next(MINIMUM_AGE, MAXIMUM_AGE);
         }
 
-        private static string GenerateFlsah() {
+        private static string GenerateSpokenLanguage() {
             var rnd = new Random();
             var roll = rnd.Next(20);
             if (roll < 3) {
@@ -41,6 +43,50 @@ namespace maternity_benefits.Storage.Mock
                 return "French";
             } else {
                 return "English";
+            }
+        }
+
+        private static string GenerateProvince() {
+            var rnd = new Random();
+            var roll = rnd.Next(25);
+            if (roll < 1) {
+                return "SK";
+            } else if (roll < 2) { 
+                return "MB";
+            } else if (roll < 5) { 
+                return "BC";
+            } else if (roll < 8) { 
+                return "AB";
+            } else if (roll < 16) { 
+                return "ON";
+            } else if (roll < 17) { 
+                return "NL";
+            } else if (roll < 18) { 
+                return "PEI";
+            } else if (roll < 19) { 
+                return "NS";
+            } else if (roll < 20) { 
+                return "NB";
+            } else if (roll < 21) { 
+                return "YK";
+            } else if (roll < 22) { 
+                return "NWT";
+            } else if (roll < 23) { 
+                return "NT";
+            } else {
+                return "QC";
+            }
+        }
+
+        private static string GenerateEducationLevel() {
+            var rnd = new Random();
+            var roll = rnd.Next(20);
+            if (roll < 6) {
+                return "University";
+            } else if (roll < 15) { 
+                return "High School";
+            } else {
+                return "Other";
             }
         }
 

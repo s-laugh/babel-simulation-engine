@@ -1,14 +1,10 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using RestSharp;
 
@@ -20,13 +16,11 @@ using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Storage;
 using esdc_simulation_base.Src.Rules;
 
-using sample_scenario;
-using sample_scenario.Rules;
-
 using maternity_benefits;
-using maternity_benefits.Rules;
 using maternity_benefits.Storage.EF;
 using maternity_benefits.Storage.EF.Store;
+
+using MBPack = esdc_simulation_classes.MaternityBenefits;
 
 namespace esdc_simulation_api
 {
@@ -62,7 +56,6 @@ namespace esdc_simulation_api
 
             services.AddMemoryCache();
 
-            InjectSampleScenario(services);
             InjectMaternityBenefits(services);
             
             services.AddScoped<IJoinResults, Joiner>();
@@ -87,7 +80,6 @@ namespace esdc_simulation_api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Apply migrations
-            // TODO: Maybe only do this if in prod
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
@@ -99,8 +91,7 @@ namespace esdc_simulation_api
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/spec.json", "Maternity Benefit Simulation API Spec");
@@ -121,39 +112,6 @@ namespace esdc_simulation_api
             {
                 endpoints.MapControllers();
             });
-        }
-
-        private void InjectSampleScenario(IServiceCollection services) {
-            services.AddScoped<IHandleSimulationRequests<SampleScenarioCaseRequest>, 
-                SimulationRequestHandler<
-                    SampleScenarioCase, 
-                    SampleScenarioCaseRequest, 
-                    SampleScenarioPerson
-                >
-            >();
-
-            services.AddScoped<
-                IBuildSimulations<
-                    SampleScenarioCase, 
-                    SampleScenarioCaseRequest
-                >,
-                SampleScenarioSimulationBuilder>(); 
-
-            services.AddScoped<IRunSimulations<SampleScenarioCase, SampleScenarioPerson>,
-                SimulationRunner<SampleScenarioCase, SampleScenarioPerson>>();
-
-            services.AddScoped<IRunCases<SampleScenarioCase, SampleScenarioPerson>, 
-                CaseRunner<SampleScenarioCase, SampleScenarioPerson>>();
-
-            services.AddScoped<IExecuteRules<SampleScenarioCase, SampleScenarioPerson>,
-                SampleScenarioExecutor>();
-
-            services.AddScoped<IRulesEngine<SampleScenarioRulesRequest>, RulesApi<SampleScenarioRulesRequest>>();
-
-            // Storage
-            services.AddScoped<IStorePersons<SampleScenarioPerson>, SampleScenarioPersonStore>();
-            services.AddScoped<IStoreSimulationResults<SampleScenarioCase>, SampleScenarioSimulationResultsStore>();
-            services.AddScoped<IStoreSimulations<SampleScenarioCase>, SampleScenarioSimulationStore>();
         }
 
         private void InjectMaternityBenefits(IServiceCollection services) {

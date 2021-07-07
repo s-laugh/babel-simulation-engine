@@ -10,13 +10,17 @@ namespace maternity_benefits
     {
         public Guid Id { get; set; }
         public int Age { get; set; }
-        public string Flsah { get; set; }
+        public string SpokenLanguage { get; set; }
+        public string EducationLevel { get; set; }
+        public string Province { get; set; }
         public decimal AverageIncome { get; set; }
 
         public MaternityBenefitsPerson() {
             Id = new Guid();
             Age = 0;
-            Flsah = "";
+            SpokenLanguage = "";
+            EducationLevel = "";
+            Province = "";
             AverageIncome = 0;
         }
     }

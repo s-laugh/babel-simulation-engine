@@ -43,7 +43,9 @@ namespace maternity_benefits.Storage.EF.Store
                 Id = dbModel.Id,
                 Age = dbModel.Age,
                 AverageIncome = dbModel.AverageIncome,
-                Flsah = dbModel.Flsah
+                SpokenLanguage = dbModel.SpokenLanguage,
+                EducationLevel = dbModel.EducationLevel,
+                Province = dbModel.Province,
             };
         }
 
@@ -52,7 +54,9 @@ namespace maternity_benefits.Storage.EF.Store
                 Id = model.Id,
                 Age = model.Age,
                 AverageIncome = model.AverageIncome,
-                Flsah = model.Flsah
+                SpokenLanguage = model.SpokenLanguage,
+                EducationLevel = model.EducationLevel,
+                Province = model.Province,
             };
         }
     }

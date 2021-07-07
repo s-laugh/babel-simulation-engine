@@ -19,7 +19,9 @@ namespace maternity_benefits
             var persons = personsRequest.Select(x => new MaternityBenefitsPerson() {
                 Id = Guid.NewGuid(),
                 AverageIncome = x.AverageIncome,
-                Flsah = x.Flsah,
+                SpokenLanguage = x.SpokenLanguage,
+                EducationLevel = x.EducationLevel,
+                Province = x.Province,
                 Age = x.Age
             });
 

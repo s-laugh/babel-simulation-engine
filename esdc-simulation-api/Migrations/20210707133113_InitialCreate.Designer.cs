@@ -10,7 +10,7 @@ using maternity_benefits.Storage.EF;
 namespace esdc_simulation_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210619145432_InitialCreate")]
+    [Migration("20210707133113_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,14 +31,47 @@ namespace esdc_simulation_api.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("AverageIncome")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(7, 2)");
 
-                    b.Property<string>("Flsah")
+                    b.Property<string>("EducationLevel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Province")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SpokenLanguage")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Persons");
+                    b.ToTable("MaternityBenefitsPerson");
+                });
+
+            modelBuilder.Entity("maternity_benefits.Storage.EF.Models.MaternityBenefitsPersonResult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("BaseAmount")
+                        .HasColumnType("decimal(7, 2)");
+
+                    b.Property<Guid>("PersonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SimulationResultId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("VariantAmount")
+                        .HasColumnType("decimal(7, 2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PersonId");
+
+                    b.HasIndex("SimulationResultId");
+
+                    b.ToTable("MaternityBenefitsPersonResult");
                 });
 
             modelBuilder.Entity("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulation", b =>
@@ -61,11 +94,13 @@ namespace esdc_simulation_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BaseCaseId");
+                    b.HasIndex("BaseCaseId")
+                        .IsUnique();
 
-                    b.HasIndex("VariantCaseId");
+                    b.HasIndex("VariantCaseId")
+                        .IsUnique();
 
-                    b.ToTable("Simulations");
+                    b.ToTable("MaternityBenefitsSimulation");
                 });
 
             modelBuilder.Entity("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulationCase", b =>
@@ -75,7 +110,7 @@ namespace esdc_simulation_api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("MaxWeeklyAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(7, 2)");
 
                     b.Property<int>("NumWeeks")
                         .HasColumnType("int");
@@ -99,62 +134,47 @@ namespace esdc_simulation_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SimulationResults");
+                    b.HasIndex("SimulationId")
+                        .IsUnique();
+
+                    b.ToTable("MaternityBenefitsSimulationResult");
                 });
 
-            modelBuilder.Entity("maternity_benefits.Storage.EF.Models.PersonResult", b =>
+            modelBuilder.Entity("maternity_benefits.Storage.EF.Models.MaternityBenefitsPersonResult", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.HasOne("maternity_benefits.Storage.EF.Models.MaternityBenefitsPerson", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.Property<decimal>("BaseAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("MaternityBenefitsPersonId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MaternityBenefitsSimulationResultId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("VariantAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MaternityBenefitsPersonId");
-
-                    b.HasIndex("MaternityBenefitsSimulationResultId");
-
-                    b.ToTable("PersonResult");
+                    b.HasOne("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulationResult", "SimulationResult")
+                        .WithMany("PersonResults")
+                        .HasForeignKey("SimulationResultId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulation", b =>
                 {
                     b.HasOne("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulationCase", "BaseCase")
-                        .WithMany()
-                        .HasForeignKey("BaseCaseId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .WithOne()
+                        .HasForeignKey("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulation", "BaseCaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulationCase", "VariantCase")
-                        .WithMany()
-                        .HasForeignKey("VariantCaseId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .WithOne()
+                        .HasForeignKey("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulation", "VariantCaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("maternity_benefits.Storage.EF.Models.PersonResult", b =>
+            modelBuilder.Entity("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulationResult", b =>
                 {
-                    b.HasOne("maternity_benefits.Storage.EF.Models.MaternityBenefitsPerson", "MaternityBenefitsPerson")
-                        .WithMany()
-                        .HasForeignKey("MaternityBenefitsPersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulationResult", "MaternityBenefitsSimulationResult")
-                        .WithMany("PersonResults")
-                        .HasForeignKey("MaternityBenefitsSimulationResultId")
+                    b.HasOne("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulation", "Simulation")
+                        .WithOne()
+                        .HasForeignKey("maternity_benefits.Storage.EF.Models.MaternityBenefitsSimulationResult", "SimulationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -2,9 +2,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\esdc-simulation-base\esdc-simulation-base.csproj" />
+    <ProjectReference Include="..\esdc-simulation-classes\esdc-simulation-classes.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BabelRulesEngineSample" Version="1.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

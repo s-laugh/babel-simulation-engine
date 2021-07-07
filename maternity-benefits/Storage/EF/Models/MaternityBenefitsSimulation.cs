@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maternity_benefits.Storage.EF.Models
 {
+    [Table("MaternityBenefitsSimulation")]
     public class MaternityBenefitsSimulation
     {
         public Guid Id { get; set; }

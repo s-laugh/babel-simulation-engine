@@ -8,7 +8,8 @@ namespace esdc_simulation_base.Src.Classes
     {
         public IPerson Person { get; set; }
 
-        public decimal Amount { get; set; } // May need to be a generic
+        // This may need to be a generic
+        public decimal Amount { get; set; }
 
     }
 }

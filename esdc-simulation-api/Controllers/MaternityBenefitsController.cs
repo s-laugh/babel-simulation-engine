@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Classes;
 using esdc_simulation_base.Src.Storage;
 using maternity_benefits;
-using maternity_benefits.Storage.Mock;
+
+using esdc_simulation_classes.MaternityBenefits;
+
 
 namespace esdc_simulation_api.Controllers
 {
@@ -33,19 +33,19 @@ namespace esdc_simulation_api.Controllers
         }
 
         [HttpGet("{simulationId}")]
-        public MaternityBenefitsSimulationResponse GetSimulation(Guid simulationId)
+        public SimulationResponse GetSimulation(Guid simulationId)
         {
             var simulation = _simulationStore.Get(simulationId);
-            return new MaternityBenefitsSimulationResponse(simulation);
+            return Convert(simulation);
         }
 
         [HttpGet]
         public AllSimulationsResponse GetAllSimulations()
         {
-            var result = new List<MaternityBenefitsSimulationResponse>();
+            var result = new List<SimulationResponse>();
             var simulations = _simulationStore.GetAll();
             foreach (var sim in simulations) {
-                result.Add(new MaternityBenefitsSimulationResponse(sim));
+                result.Add(Convert(sim));
             }
             return new AllSimulationsResponse() {
                 Simulations = result
@@ -53,35 +53,91 @@ namespace esdc_simulation_api.Controllers
         }
 
         [HttpPost]
-        public CreateSimulationResponse CreateSimulation(SimulationRequest<MaternityBenefitsCaseRequest> request)
+        public CreateSimulationResponse CreateSimulation(CreateSimulationRequest request)
         {
-            var simulationId = _requestHandler.Handle(request);
+            var simulationRequest = Convert(request);
+            var simulationId = _requestHandler.Handle(simulationRequest);
             return new CreateSimulationResponse {
                 Id = simulationId
             };
         }
 
-        // [HttpGet("{simulationId}/Results")]
-        // public SimulationResult GetResult(Guid simulationId)
-        // {
-        //     var result = _resultStore.Get(simulationId);
-        //     return result;
-        // }
-
         [HttpGet("{simulationId}/Results")]
-        public SimulationResultResponse GetFullResult(Guid simulationId)
+        public FullResponse GetFullResponse(Guid simulationId)
         {
             var simulation = _simulationStore.Get(simulationId);
             var result = _resultStore.Get(simulationId);
 
-            return new SimulationResultResponse() {
-                Simulation = new MaternityBenefitsSimulationResponse(simulation),
-                Result = new MaternityBenefitsSimulationResult(result)
-
+            return new FullResponse() {
+                Simulation = Convert(simulation),
+                Result = Convert(result)
             };
         }
 
-        // TODO: Need a delete
+        [HttpDelete("{simulationId}")]
+        public void DeleteSimulation(Guid simulationId)
+        {
+            _simulationStore.Delete(simulationId);
+        }
 
+        private SimulationResponse Convert(Simulation<MaternityBenefitsCase> simulation) {
+            return new SimulationResponse() {
+                Id = simulation.Id,
+                SimulationName = simulation.Name,
+                DateCreated = simulation.DateCreated,
+                BaseCase = Convert(simulation.BaseCase),
+                VariantCase = Convert(simulation.VariantCase)
+            };
+        }
+
+        private CaseRequest Convert(MaternityBenefitsCase caseModel) {
+            return new CaseRequest() {
+                NumWeeks = caseModel.NumWeeks,
+                MaxWeeklyAmount = caseModel.MaxWeeklyAmount,
+                Percentage = caseModel.Percentage
+            };
+        }
+
+        private SimulationResultResponse Convert(SimulationResult result) 
+        {
+            var personResults = result.PersonResults.Select(x => {
+                return new PersonResultResponse() {
+                    VariantAmount = x.VariantAmount,
+                    BaseAmount = x.BaseAmount,
+                    Person = Convert((MaternityBenefitsPerson)x.Person)
+                };
+            }).ToList();
+
+            return new SimulationResultResponse() {
+                PersonResults = personResults
+            };
+        }
+
+        private PersonResponse Convert(MaternityBenefitsPerson person) {
+            return new PersonResponse() {
+                Id = person.Id,
+                AverageIncome = person.AverageIncome,
+                Age = person.Age,
+                EducationLevel = person.EducationLevel,
+                Province = person.Province,
+                SpokenLanguage = person.SpokenLanguage
+            };
+        }
+
+        private SimulationRequest<MaternityBenefitsCaseRequest> Convert(CreateSimulationRequest request) {
+            return new SimulationRequest<MaternityBenefitsCaseRequest>() {
+                SimulationName = request.SimulationName,
+                BaseCaseRequest = Convert(request.BaseCaseRequest),
+                VariantCaseRequest = Convert(request.VariantCaseRequest)
+            };
+        }
+
+        private MaternityBenefitsCaseRequest Convert(CaseRequest req) {
+            return new MaternityBenefitsCaseRequest() {
+                NumWeeks = req.NumWeeks,
+                MaxWeeklyAmount = req.MaxWeeklyAmount,
+                Percentage = req.Percentage
+            };
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using esdc_simulation_base.Src.Classes;
 
+
 namespace maternity_benefits
 {
     public class MaternityBenefitsCase : MaternityBenefitsCaseRequest, ISimulationCase

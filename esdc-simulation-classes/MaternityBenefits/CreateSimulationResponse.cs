@@ -1,6 +1,6 @@
 using System;
 
-namespace esdc_simulation_api
+namespace esdc_simulation_classes.MaternityBenefits
 {
     public class CreateSimulationResponse
     {

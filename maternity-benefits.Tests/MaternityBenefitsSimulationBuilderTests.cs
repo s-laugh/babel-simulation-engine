@@ -5,8 +5,8 @@ using Xunit;
 using FakeItEasy;
 
 using esdc_simulation_base.Src.Classes;
-using esdc_simulation_base.Src.Storage;
-using maternity_benefits.Rules;
+
+using esdc_simulation_classes.MaternityBenefits;
 
 namespace maternity_benefits.Tests
 {
