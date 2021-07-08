@@ -90,14 +90,6 @@ namespace esdc_simulation_api.Controllers
             };
         }
 
-        private CaseRequest Convert(MaternityBenefitsCase caseModel) {
-            return new CaseRequest() {
-                NumWeeks = caseModel.NumWeeks,
-                MaxWeeklyAmount = caseModel.MaxWeeklyAmount,
-                Percentage = caseModel.Percentage
-            };
-        }
-
         private SimulationResultResponse Convert(SimulationResult result) 
         {
             var personResults = result.PersonResults.Select(x => {
@@ -129,8 +121,25 @@ namespace esdc_simulation_api.Controllers
                 Id = Guid.NewGuid(),
                 DateCreated = DateTime.Now,
                 Name = request.SimulationName,
-                BaseCase = (MaternityBenefitsCase)request.BaseCaseRequest,
-                VariantCase = (MaternityBenefitsCase)request.VariantCaseRequest
+                BaseCase = Convert(request.BaseCaseRequest),
+                VariantCase = Convert(request.VariantCaseRequest)
+            };
+        }
+
+        private MaternityBenefitsCase Convert(CaseRequest caseModel) {
+            return new MaternityBenefitsCase() {
+                Id = Guid.NewGuid(),
+                NumWeeks = caseModel.NumWeeks,
+                MaxWeeklyAmount = caseModel.MaxWeeklyAmount,
+                Percentage = caseModel.Percentage
+            };
+        }
+
+        private CaseRequest Convert(MaternityBenefitsCase caseModel) {
+            return new CaseRequest() {
+                NumWeeks = caseModel.NumWeeks,
+                MaxWeeklyAmount = caseModel.MaxWeeklyAmount,
+                Percentage = caseModel.Percentage
             };
         }
     }
