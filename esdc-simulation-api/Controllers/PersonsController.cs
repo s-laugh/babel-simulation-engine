@@ -9,6 +9,8 @@ using esdc_simulation_base.Src.Storage;
 using maternity_benefits;
 using maternity_benefits.Storage.Mock;
 
+using esdc_simulation_classes.MaternityBenefits;
+
 namespace esdc_simulation_api.Controllers
 {
     [ApiController]

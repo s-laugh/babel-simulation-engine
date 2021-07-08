@@ -115,35 +115,28 @@ namespace esdc_simulation_api
         }
 
         private void InjectMaternityBenefits(IServiceCollection services) {
-            services.AddScoped<IHandleSimulationRequests<MaternityBenefitsCaseRequest>, 
-                SimulationRequestHandler<
-                    MaternityBenefitsCase, 
-                    MaternityBenefitsCaseRequest, 
-                    MaternityBenefitsPerson
-                >
+            services.AddScoped<IHandleSimulationRequests<MaternityBenefitsCase>, 
+                SimulationRequestHandler<MaternityBenefitsCase,MaternityBenefitsPerson>
             >();
 
-            services.AddScoped<IHandlePersonCreationRequests<MaternityBenefitsPersonRequest>, 
+            services.AddScoped<IHandlePersonCreationRequests<MBPack.MaternityBenefitsPersonRequest>, 
                 MaternityBenefitPersonCreationRequestHandler
             >();
-
-            services.AddScoped<
-                IBuildSimulations<
-                    MaternityBenefitsCase, 
-                    MaternityBenefitsCaseRequest
-                >,
-                MaternityBenefitsSimulationBuilder>(); 
 
             services.AddScoped<IRunSimulations<MaternityBenefitsCase, MaternityBenefitsPerson>,
                 SimulationRunner<MaternityBenefitsCase, MaternityBenefitsPerson>>();
 
             services.AddScoped<IRunCases<MaternityBenefitsCase, MaternityBenefitsPerson>, 
-                CaseRunner<MaternityBenefitsCase, MaternityBenefitsPerson>>();
+                BulkCaseRunner<MaternityBenefitsCase, MaternityBenefitsPerson>>();
+            //services.AddScoped<IRunCases<MaternityBenefitsCase, MaternityBenefitsPerson>, 
+                //CaseRunner<MaternityBenefitsCase, MaternityBenefitsPerson>>();
 
             services.AddScoped<IExecuteRules<MaternityBenefitsCase, MaternityBenefitsPerson>,
                 MaternityBenefitsExecutor>();
+            services.AddScoped<IExecuteBulkRules<MaternityBenefitsCase, MaternityBenefitsPerson>,
+                MaternityBenefitsBulkExecutor>();
 
-            services.AddScoped<IRulesEngine<MaternityBenefitsRulesRequest>, RulesApi<MaternityBenefitsRulesRequest>>();
+            services.AddScoped<IRulesEngine, RulesApi>();
 
             // EF Storage
             services.AddScoped<IStorePersons<MaternityBenefitsPerson>, MaternityBenefitsPersonEFStore>();

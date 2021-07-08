@@ -5,9 +5,8 @@ using esdc_simulation_base.Src.Classes;
 
 namespace esdc_simulation_base.Src.Rules
 {
-    public interface IRulesEngine<T>
-        where T : IRulesRequest
+    public interface IRulesEngine
     {
-        V Execute<V>(string endpoint, T rulesRequest);
+        T Execute<T>(string endpoint, object rulesRequest);
     }
 }

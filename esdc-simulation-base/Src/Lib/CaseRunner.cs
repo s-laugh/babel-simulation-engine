@@ -20,10 +20,10 @@ namespace esdc_simulation_base.Src.Lib
             var personDict = persons.ToDictionary(x => x.Id);
 
             foreach (var person in persons) {
-                var amount = _executor.Execute(simulationCase, person);
+                var personRes = _executor.Execute(simulationCase, person);
                 var nextResult = new PersonCaseResult() {
                     Person = personDict[person.Id],
-                    Amount = amount
+                    Amount = personRes
                 };
                 result.ResultSet.Add(person.Id, nextResult);
             }

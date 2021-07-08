@@ -6,8 +6,7 @@ using RestSharp.Serializers.NewtonsoftJson;
 
 namespace esdc_simulation_base.Src.Rules
 {
-    public class RulesApi<T> : IRulesEngine<T>
-        where T: IRulesRequest
+    public class RulesApi : IRulesEngine
     {
         private readonly IRestClient _client;
 
@@ -17,16 +16,16 @@ namespace esdc_simulation_base.Src.Rules
             _client.UseNewtonsoftJson();
         }
 
-        public W Execute<W>(string endpoint, T request) {
+        public U Execute<U>(string endpoint, object request) {
             var restRequest = new RestRequest(endpoint, DataFormat.Json);
 
             restRequest.AddJsonBody(request);
-            var result = _client.Post<RulesResponse<W>>(restRequest);
+            var result = _client.Post<U>(restRequest);
 
             if (result.StatusCode != System.Net.HttpStatusCode.OK) {
                 throw new RulesApiException(result.ErrorMessage);
             }
-            return result.Data.Amount;
+            return result.Data;
         }
 
     }

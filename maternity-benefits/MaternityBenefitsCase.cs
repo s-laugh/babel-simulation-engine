@@ -3,17 +3,19 @@ using System.Collections.Generic;
 
 using esdc_simulation_base.Src.Classes;
 
+using esdc_simulation_classes.MaternityBenefits;
+
 
 namespace maternity_benefits
 {
-    public class MaternityBenefitsCase : MaternityBenefitsCaseRequest, ISimulationCase
+    public class MaternityBenefitsCase : CaseRequest, ISimulationCase
     {
         public Guid Id { get; set; }
 
         public MaternityBenefitsCase() : base() {
         }
 
-        public MaternityBenefitsCase(MaternityBenefitsCaseRequest request) {
+        public MaternityBenefitsCase(CaseRequest request) {
             Id = Guid.NewGuid();
             NumWeeks = request.NumWeeks;
             MaxWeeklyAmount = request.MaxWeeklyAmount;

@@ -5,34 +5,28 @@ using esdc_simulation_base.Src.Storage;
 
 namespace esdc_simulation_base.Src.Lib
 {
-    public class SimulationRequestHandler<T, U, V> : IHandleSimulationRequests<U>
+    public class SimulationRequestHandler<T, U> : IHandleSimulationRequests<T>
         where T : ISimulationCase
-        where U : ISimulationCaseRequest
-        where V : IPerson
+        where U : IPerson
     {
-        private readonly IBuildSimulations<T, U> _simulationBuilder;
         private readonly IStoreSimulations<T> _simulationStore;
-        private readonly IStorePersons<V> _personStore;
+        private readonly IStorePersons<U> _personStore;
         private readonly IStoreSimulationResults<T> _resultStore;
-        private readonly IRunSimulations<T, V> _runner;
+        private readonly IRunSimulations<T, U> _runner;
 
         public SimulationRequestHandler(
-            IBuildSimulations<T, U> simulationBuilder,
             IStoreSimulations<T> simulationStore,
-            IStorePersons<V> personStore,
+            IStorePersons<U> personStore,
             IStoreSimulationResults<T> resultStore,
-            IRunSimulations<T, V> runner 
+            IRunSimulations<T, U> runner 
         ) {
-            _simulationBuilder = simulationBuilder;
             _simulationStore = simulationStore;
             _personStore = personStore;
             _resultStore = resultStore;
             _runner = runner;
         }
 
-        public Guid Handle(SimulationRequest<U> request) {
-            var simulation = _simulationBuilder.Build(request);
-
+        public Guid Handle(Simulation<T> simulation) {
             _simulationStore.Save(simulation);
             
             var persons = _personStore.GetAllPersons();

@@ -22,16 +22,16 @@ namespace esdc_simulation_base.Tests.Lib
                 Url = "http://localhost:6000"
             });
 
-            var postResult = A.Fake<RestResponse<RulesResponse<decimal>>>();
-            postResult.Data = new RulesResponse<decimal>(){ Amount = testAmount };
+            var postResult = A.Fake<RestResponse<decimal>>();
+            postResult.Data = testAmount;
             postResult.StatusCode = System.Net.HttpStatusCode.OK;
             
-            A.CallTo(() => client.Execute<RulesResponse<decimal>>(A<RestRequest>._, Method.POST))
+            A.CallTo(() => client.Execute<decimal>(A<RestRequest>._, Method.POST))
                 .Returns(postResult);
 
             // Act
-            var sut = new RulesApi<IRulesRequest>(client, options);
-            var rulesRequest = A.Fake<IRulesRequest>();
+            var sut = new RulesApi(client, options);
+            var rulesRequest = A.Fake<object>();
             var result = sut.Execute<decimal>("fake_endpoint", rulesRequest);
 
             // Assert

@@ -16,9 +16,9 @@ namespace maternity_benefits.Tests
         public void ShouldWorkNormally()
         {
             // Arrange
-            var rulesApi = A.Fake<IRulesEngine<MaternityBenefitsRulesRequest>>();
-            decimal testResult = 1.67m;
-            A.CallTo(() => rulesApi.Execute<decimal>("MaternityBenefits", A<MaternityBenefitsRulesRequest>._)).Returns(testResult);
+            var rulesApi = A.Fake<IRulesEngine>();
+            var testResult = new Rule.MaternityBenefitsResponse() { Amount = 1.67m };
+            A.CallTo(() => rulesApi.Execute<Rule.MaternityBenefitsResponse>("MaternityBenefits", A<Rule.MaternityBenefitsRequest>._)).Returns(testResult);
             
             // Act
             var sut = new MaternityBenefitsExecutor(rulesApi);
@@ -28,7 +28,7 @@ namespace maternity_benefits.Tests
             var result = sut.Execute(simCase, person);
 
             // Assert
-            Assert.Equal(testResult, result);
+            Assert.Equal(testResult.Amount, result);
         }
     }
 }

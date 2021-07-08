@@ -17,12 +17,12 @@ namespace esdc_simulation_api.Controllers
     [Route("[controller]")]
     public class MaternityBenefitsController : ControllerBase
     {
-        private readonly IHandleSimulationRequests<MaternityBenefitsCaseRequest> _requestHandler;
+        private readonly IHandleSimulationRequests<MaternityBenefitsCase> _requestHandler;
         private readonly IStoreSimulations<MaternityBenefitsCase> _simulationStore;
         private readonly IStoreSimulationResults<MaternityBenefitsCase> _resultStore;
 
         public MaternityBenefitsController(
-            IHandleSimulationRequests<MaternityBenefitsCaseRequest> requestHandler,
+            IHandleSimulationRequests<MaternityBenefitsCase> requestHandler,
             IStoreSimulations<MaternityBenefitsCase> simulationStore,
             IStoreSimulationResults<MaternityBenefitsCase> resultStore
         )
@@ -55,8 +55,8 @@ namespace esdc_simulation_api.Controllers
         [HttpPost]
         public CreateSimulationResponse CreateSimulation(CreateSimulationRequest request)
         {
-            var simulationRequest = Convert(request);
-            var simulationId = _requestHandler.Handle(simulationRequest);
+            var simulation = Convert(request);
+            var simulationId = _requestHandler.Handle(simulation);
             return new CreateSimulationResponse {
                 Id = simulationId
             };
@@ -124,19 +124,13 @@ namespace esdc_simulation_api.Controllers
             };
         }
 
-        private SimulationRequest<MaternityBenefitsCaseRequest> Convert(CreateSimulationRequest request) {
-            return new SimulationRequest<MaternityBenefitsCaseRequest>() {
-                SimulationName = request.SimulationName,
-                BaseCaseRequest = Convert(request.BaseCaseRequest),
-                VariantCaseRequest = Convert(request.VariantCaseRequest)
-            };
-        }
-
-        private MaternityBenefitsCaseRequest Convert(CaseRequest req) {
-            return new MaternityBenefitsCaseRequest() {
-                NumWeeks = req.NumWeeks,
-                MaxWeeklyAmount = req.MaxWeeklyAmount,
-                Percentage = req.Percentage
+        private Simulation<MaternityBenefitsCase> Convert(CreateSimulationRequest request) {
+            return new Simulation<MaternityBenefitsCase>() {
+                Id = Guid.NewGuid(),
+                DateCreated = DateTime.Now,
+                Name = request.SimulationName,
+                BaseCase = (MaternityBenefitsCase)request.BaseCaseRequest,
+                VariantCase = (MaternityBenefitsCase)request.VariantCaseRequest
             };
         }
     }

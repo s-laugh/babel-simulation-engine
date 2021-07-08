@@ -8,9 +8,9 @@ namespace maternity_benefits
 {
     public class MaternityBenefitsExecutor : IExecuteRules<MaternityBenefitsCase, MaternityBenefitsPerson>
     {
-        private readonly IRulesEngine<MaternityBenefitsRulesRequest> _rulesApi;
+        private readonly IRulesEngine _rulesApi;
         private static readonly string ENDPOINT = "MaternityBenefits";
-        public MaternityBenefitsExecutor(IRulesEngine<MaternityBenefitsRulesRequest> rulesApi) {
+        public MaternityBenefitsExecutor(IRulesEngine rulesApi) {
             _rulesApi = rulesApi;
         }
 
@@ -23,12 +23,13 @@ namespace maternity_benefits
             var rulePerson = new Rule.MaternityBenefitsPerson() {
                 AverageIncome = person.AverageIncome
             };
-            var rulesReq = new MaternityBenefitsRulesRequest() {
+            var rulesReq = new Rule.MaternityBenefitsRequest() {
                 Rule = rule,
                 Person = rulePerson
             };
-            
-            return _rulesApi.Execute<decimal>(ENDPOINT, rulesReq);
+
+            var result = _rulesApi.Execute<Rule.MaternityBenefitsResponse>(ENDPOINT, rulesReq);
+            return result.Amount;
         }
     }
 }

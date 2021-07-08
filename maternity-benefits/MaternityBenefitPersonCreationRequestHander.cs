@@ -5,6 +5,8 @@ using System.Linq;
 using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Storage;
 
+using esdc_simulation_classes.MaternityBenefits;
+
 namespace maternity_benefits
 {
     public class MaternityBenefitPersonCreationRequestHandler: IHandlePersonCreationRequests<MaternityBenefitsPersonRequest>

@@ -20,29 +20,19 @@ namespace esdc_simulation_base.Tests.Lib
             var personStore = A.Fake<IStorePersons<IPerson>>();
             var resultStore = A.Fake<IStoreSimulationResults<ISimulationCase>>();
             var runner = A.Fake<IRunSimulations<ISimulationCase, IPerson>>();
-            var simulationBuilder = A.Fake<IBuildSimulations<ISimulationCase, ISimulationCaseRequest>>();
 
             var testId = Guid.NewGuid();
             var simulation = new Simulation<ISimulationCase>() {
                 Id = testId
             };
-            A.CallTo(() => simulationBuilder.Build(A<SimulationRequest<ISimulationCaseRequest>>._)).Returns(simulation);
-            
             
             // Act
-            var sut = new SimulationRequestHandler<
-                ISimulationCase, 
-                ISimulationCaseRequest,
-                IPerson>
-                (simulationBuilder, simulationStore, personStore, resultStore, runner);
+            var sut = new SimulationRequestHandler<ISimulationCase, IPerson>(simulationStore, personStore, resultStore, runner);
 
-            var request = new SimulationRequest<ISimulationCaseRequest>();
-            
-            var result = sut.Handle(request);
+            var result = sut.Handle(simulation);
 
 
             // Assert
-            A.CallTo(() => simulationBuilder.Build(A<SimulationRequest<ISimulationCaseRequest>>._)).MustHaveHappenedOnceExactly();
             A.CallTo(() => simulationStore.Save(A<Simulation<ISimulationCase>>._)).MustHaveHappenedOnceExactly();
             A.CallTo(() => personStore.GetAllPersons()).MustHaveHappenedOnceExactly();
             A.CallTo(() => runner.Run(A<Simulation<ISimulationCase>>._, A<IEnumerable<IPerson>>._)).MustHaveHappenedOnceExactly();

@@ -6,6 +6,8 @@ using FakeItEasy;
 
 using esdc_simulation_base.Src.Storage;
 
+using esdc_simulation_classes.MaternityBenefits;
+
 namespace maternity_benefits.Tests
 {
     public class MaternityBenefitPersonCreationRequestHandlerTests
