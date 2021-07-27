@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using esdc_simulation_base.Src.Lib;
 using esdc_simulation_base.Src.Storage;
+using esdc_simulation_base.Src.Classes;
 
 using maternity_benefits;
 using maternity_benefits.Storage.Mock;
@@ -30,38 +31,46 @@ namespace esdc_simulation_api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<MaternityBenefitsPerson> GetPersons()
+        public ActionResult<IEnumerable<MaternityBenefitsPerson>> GetPersons()
         {
             var persons = _personStore.GetAllPersons();
-            return persons;
+            return Ok(persons);
         }
 
         
         [HttpPost]
-        public void AddPersons(List<MaternityBenefitsPersonRequest> personsRequest)
+        public ActionResult AddPersons(List<MaternityBenefitsPersonRequest> personsRequest)
         {
             _personRequestHandler.Handle(personsRequest);
-            return;
+            return Ok();
         }
 
-        // TODO: Make sure this works properly
         [HttpDelete]
-        public void DeletePersons()
+        public ActionResult DeletePersons()
         {
             _personStore.Clear();
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeletePerson(Guid id)
+        {
+            try {
+                _personStore.DeletePerson(id);
+                return Ok();
+            } catch (NotFoundException e) {
+                return BadRequest(e.Message);
+            } 
         }
 
 
-
-        // TODO: Add a toggle/config//auth on here for more control
-
         [HttpGet("Mock")]
-        public string MockSetup()
+        public ActionResult<string> MockSetup()
         {   
             var numberOfMocks = 100;
             var persons = _personStore.GetAllPersons();
             if (persons.Count() > 0) {
-                throw new Exception("DB is populated. Cannot generate mocks.");
+                return BadRequest(new { message = "DB is populated. Cannot generate mocks."});
             }
 
             var mockPersons = MockCreator.GetMockPersons(numberOfMocks);

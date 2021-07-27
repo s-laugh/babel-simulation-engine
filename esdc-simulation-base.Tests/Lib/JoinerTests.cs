@@ -23,12 +23,9 @@ namespace esdc_simulation_base.Tests.Lib
             var baseResult = GenerateCaseResult(personId, testBaseAmount);
             var variantResult = GenerateCaseResult(personId, testVariantAmount);
 
-
             // Act
-            var sut = new Joiner();
-            
+            var sut = new Joiner();            
             var result = sut.Join(baseResult, variantResult);
-
 
             // Assert
             Assert.Single(result);

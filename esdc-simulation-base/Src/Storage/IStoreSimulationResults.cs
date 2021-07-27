@@ -10,6 +10,5 @@ namespace esdc_simulation_base.Src.Storage
     {
         void Save(Guid simulationId, SimulationResult simulationResult);
         SimulationResult Get(Guid simulationId);
-        void Delete(Guid id);
     }
 }

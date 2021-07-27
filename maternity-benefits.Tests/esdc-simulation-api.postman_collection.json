@@ -1,0 +1,317 @@
+{
+	"info": {
+		"_postman_id": "7415a797-0e6b-4779-b6c6-4e2abcc65616",
+		"name": "esdc-simulation-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "MaternityBenefits",
+			"item": [
+				{
+					"name": "Create Simulation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"SimulationName\": \"Test simulation\",\r\n    \"BaseCaseRequest\": {\r\n        \"MaxWeeklyAmount\": 595,\r\n        \"Percentage\": 55,\r\n        \"NumWeeks\": 15\r\n    },\r\n    \"VariantCaseRequest\": {\r\n        \"MaxWeeklyAmount\": 400,\r\n        \"Percentage\": 60,\r\n        \"NumWeeks\": 16\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/MaternityBenefits",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"MaternityBenefits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Simulation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/MaternityBenefits/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"MaternityBenefits",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "e4d6057a-76c9-4adc-bf36-4176cec9fb33"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Simulation",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/MaternityBenefits/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"MaternityBenefits",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "e4d6057a-76c9-4adc-bf36-4176cec9fb33"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Simulations Until Last X Days",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/MaternityBenefits/:UntilLastXDays/Batch",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"MaternityBenefits",
+								":UntilLastXDays",
+								"Batch"
+							],
+							"variable": [
+								{
+									"key": "UntilLastXDays",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Simulations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/MaternityBenefits",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"MaternityBenefits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Simulation Results",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/MaternityBenefits/:id/results",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"MaternityBenefits",
+								":id",
+								"results"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "e4d6057a-76c9-4adc-bf36-4176cec9fb33"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Persons",
+			"item": [
+				{
+					"name": "Get Persons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/Persons",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Persons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete all persons",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/Persons",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Persons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Person",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/Persons/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Persons",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "a282de00-9ef9-4017-bef3-0064416dd3ad"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Persons",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"age\": 26,\r\n        \"spokenLanguage\": \"French\",\r\n        \"educationLevel\": \"University\",\r\n        \"province\": \"PEI\",\r\n        \"averageIncome\": 1263.00\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/Persons",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Persons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Mock",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/Persons/Mock",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"Persons",
+								"Mock"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Swagger",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/swagger/v1/swagger.json",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"swagger",
+						"v1",
+						"swagger.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/ping",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"ping"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

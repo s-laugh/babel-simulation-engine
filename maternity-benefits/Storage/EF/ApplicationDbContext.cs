@@ -35,7 +35,7 @@ namespace maternity_benefits.Storage.EF
             builder.Entity<EFModels.MaternityBenefitsPersonResult>()
                 .HasOne(e => e.Person)
                 .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<EFModels.MaternityBenefitsPerson> Persons { get; set; }

@@ -19,7 +19,7 @@ This is the executable web-api project that exposes the functionality of the oth
 This project is a class library containing plain C# objects which are used as request/response objects in the esdc-simulation-api project. These are separated as their own class library so that they can be published as a Nuget Package and used by consuming applications, such as the Data Primer and the Front-end Web Application. 
 
 ### maternity-benefits
-This is a concrete example of a class library that implements the interfaces specified in the esdc-simulation-base library. This includes code specific to the maternity benefits simulation, as well as implementations for the storage layer, which interacts with the database. There is also an associated test project.
+This is a concrete example of a class library that implements the interfaces specified in the esdc-simulation-base library. This includes code specific to the maternity benefits simulation, as well as implementations for the storage layer, which interacts with the database. There is also an associated test project which includes a Postman collection for the API calls.
 
 ## Spec
 
@@ -30,6 +30,24 @@ The OpenAPI Spec for the project can be viewed at `/swagger/v1/swagger.json`, an
 - Get Simulation Results: Using a simulations unique GUID, this request fetches the results of running a simulation, including the base/variant cases, as well as the simulated persons, their demographic info, and their base/variant amounts. This request is used by the Front-end Web App.
 
 ## Development
+
+### Database Setup
+The Simulation Engine requires a connection to a database. This is where the simulation persons (data) is stored, as well as the results. 
+
+This project uses Entity Framework (EF) Core as an ORM for interacting with a relational SQL Database.  There are currently two deployments of the Simulation Engine. One points to a "mock" database server, and the other points to a "prod" database server. These two databases necessarily have the same schema, which is facilitated through Entity Framework and Migrations. 
+
+The EF functionality is stored in the maternity-benefits project under the Storage/EF folder. The ApplicationDbContext is the main link between the database and the C# classes. This class is injected into the EFStore classes so that the C# code can interact with the database values. 
+
+If new properties are being added to the database, then an EF migration is required (https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli). The changes cna be made to the C# class and then a migration must be created, which will generate a script inside the Migrations folder in the esdc-simulation-api project. The database must then be updated with the migration. This is actually handled in the code - in the Startup.cs file there is functionality to automatically run migrations.
+
+If you are setting up a new Azure SQL database, then take the following steps:
+- Create a new SQL server  in Azure. Create a username and password and store it securely
+- In the firewall settings of your new server, ensure that you "Allow Azure Services" to access it, and you can also add your client IP to the whitelist
+- Create a new database on that server
+- Get the connection string for the database, and add it into the config setting
+- Run the project, so that the code in Startup.cs can run the migration against the database
+- Verify the database has the proper tables
+
 
 ### Config
 

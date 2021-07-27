@@ -6,6 +6,7 @@ using System.Linq;
 using EFModels = maternity_benefits.Storage.EF.Models;
 
 using esdc_simulation_base.Src.Storage;
+using esdc_simulation_base.Src.Classes;
 
 namespace maternity_benefits.Storage.EF.Store
 {
@@ -33,8 +34,23 @@ namespace maternity_benefits.Storage.EF.Store
             _context.SaveChanges();
         }
 
+        public void DeletePerson(Guid id) {
+            var dbPerson = _context.Persons
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Id == id);
+            if (dbPerson == null) {
+                throw new NotFoundException("Person not found");
+            }
+            _context.Persons.Remove(dbPerson);
+            _context.SaveChanges();
+        }
+
         public void Clear() {
-            // TODO: Remove all
+            var results = _context.Persons.AsNoTracking();
+            foreach (var result in results) {
+                _context.Persons.Remove(result);
+            }
+            _context.SaveChanges();
         }
 
 

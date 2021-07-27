@@ -16,7 +16,7 @@ namespace esdc_simulation_api.Controllers
         /// </summary>
         /// <returns>Welcome text with date</returns>
         [HttpGet]
-        public string Index()
+        public ActionResult<string> Index()
         {
             return $"Welcome to the Simulation API: {DateTime.Now}";
         }

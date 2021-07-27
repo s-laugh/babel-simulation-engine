@@ -10,6 +10,7 @@ namespace esdc_simulation_base.Src.Storage
     {
         IEnumerable<T> GetAllPersons();
         void AddPersons(IEnumerable<T> persons);
+        void DeletePerson(Guid id);
         void Clear();
     }
 }

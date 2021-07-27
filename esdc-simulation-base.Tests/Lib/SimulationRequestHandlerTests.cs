@@ -28,9 +28,7 @@ namespace esdc_simulation_base.Tests.Lib
             
             // Act
             var sut = new SimulationRequestHandler<ISimulationCase, IPerson>(simulationStore, personStore, resultStore, runner);
-
             var result = sut.Handle(simulation);
-
 
             // Assert
             A.CallTo(() => simulationStore.Save(A<Simulation<ISimulationCase>>._)).MustHaveHappenedOnceExactly();

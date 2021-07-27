@@ -28,7 +28,10 @@ namespace maternity_benefits.Storage.EF.Store
                 .AsNoTracking()
                 .Include(x => x.BaseCase)
                 .Include(x => x.VariantCase)
-                .First(x => x.Id == simulationId);
+                .FirstOrDefault(x => x.Id == simulationId);
+            if (dbModel == null) {
+                throw new NotFoundException("Simulation not found");
+            }
             return ConvertFromDb(dbModel);
         }
 
@@ -41,11 +44,13 @@ namespace maternity_benefits.Storage.EF.Store
                 .ToList();
         }
 
-        // TODO: May want a soft-delete
         public void Delete(Guid simulationId) {
             var objectToRemove = _context.Simulations
                 .AsNoTracking()
-                .First(x => x.Id == simulationId);
+                .FirstOrDefault(x => x.Id == simulationId);
+            if (objectToRemove == null) {
+                throw new NotFoundException("Simulation not found");
+            }
             _context.Remove(objectToRemove);
             _context.SaveChanges();
         }

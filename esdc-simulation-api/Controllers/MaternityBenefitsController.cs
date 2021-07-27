@@ -33,14 +33,18 @@ namespace esdc_simulation_api.Controllers
         }
 
         [HttpGet("{simulationId}")]
-        public SimulationResponse GetSimulation(Guid simulationId)
+        public ActionResult<SimulationResponse> GetSimulation(Guid simulationId)
         {
-            var simulation = _simulationStore.Get(simulationId);
-            return Convert(simulation);
+            try {
+                var simulation = _simulationStore.Get(simulationId);
+                return Convert(simulation);
+            } catch (NotFoundException e) {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet]
-        public AllSimulationsResponse GetAllSimulations()
+        public ActionResult<AllSimulationsResponse> GetAllSimulations()
         {
             var result = new List<SimulationResponse>();
             var simulations = _simulationStore.GetAll();
@@ -53,7 +57,7 @@ namespace esdc_simulation_api.Controllers
         }
 
         [HttpPost]
-        public CreateSimulationResponse CreateSimulation(CreateSimulationRequest request)
+        public ActionResult<CreateSimulationResponse> CreateSimulation(CreateSimulationRequest request)
         {
             var simulation = Convert(request);
             var simulationId = _requestHandler.Handle(simulation);
@@ -63,22 +67,45 @@ namespace esdc_simulation_api.Controllers
         }
 
         [HttpGet("{simulationId}/Results")]
-        public FullResponse GetFullResponse(Guid simulationId)
+        public ActionResult<FullResponse> GetFullResponse(Guid simulationId)
         {
-            var simulation = _simulationStore.Get(simulationId);
-            var result = _resultStore.Get(simulationId);
+            try {
+                var simulation = _simulationStore.Get(simulationId);
+                var result = _resultStore.Get(simulationId);
+                
+                return new FullResponse() {
+                    Simulation = Convert(simulation),
+                    Result = Convert(result)
+                };
+            }
+            catch (NotFoundException e) {
+                return BadRequest(e.Message);
+            }
+        }
 
-            return new FullResponse() {
-                Simulation = Convert(simulation),
-                Result = Convert(result)
-            };
+        [HttpDelete("{untilLastXDays}/Batch")]
+        public ActionResult DeleteSimulationBatch(int untilLastXDays)
+        {
+            var sims = _simulationStore.GetAll();
+            var simsToDelete = sims.Where(x => x.DateCreated < DateTime.Now.AddDays(-untilLastXDays));
+            foreach (var sim in simsToDelete) {
+                _simulationStore.Delete(sim.Id);
+            }
+            return Ok();
         }
 
         [HttpDelete("{simulationId}")]
-        public void DeleteSimulation(Guid simulationId)
+        public ActionResult DeleteSimulation(Guid simulationId)
         {
-            _simulationStore.Delete(simulationId);
+            try {
+                _simulationStore.Delete(simulationId);
+                return Ok();
+            }
+            catch (NotFoundException e) {
+                return BadRequest(e.Message);
+            }
         }
+        
 
         private SimulationResponse Convert(Simulation<MaternityBenefitsCase> simulation) {
             return new SimulationResponse() {

@@ -24,9 +24,5 @@ namespace maternity_benefits.Storage.Cache
         public SimulationResult Get(Guid simulationId) {
             return _cache.Get<SimulationResult>($"{cacheKeyBase}_{simulationId}");
         }
-
-        public void Delete(Guid simulationId) {
-           _cache.Remove($"{cacheKeyBase}_{simulationId}");
-        }
     }
 }

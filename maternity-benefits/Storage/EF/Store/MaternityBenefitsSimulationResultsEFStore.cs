@@ -28,17 +28,12 @@ namespace maternity_benefits.Storage.EF.Store
                 .AsNoTracking()
                 .Include(x => x.PersonResults)
                 .ThenInclude(x => x.Person)
-                .First(x => x.SimulationId == simulationId);
+                .FirstOrDefault(x => x.SimulationId == simulationId);
+            if (dbModel == null) {
+                throw new NotFoundException("Simulation not found");
+            }
             
             return ConvertFromDb(dbModel);
-        }
-
-        public void Delete(Guid simulationId) {
-           var objectToRemove = _context.SimulationResults
-                .AsNoTracking()
-                .First(x => x.SimulationId == simulationId);
-            _context.Remove(objectToRemove);
-            _context.SaveChanges();
         }
 
         public EFModels.MaternityBenefitsSimulationResult ConvertToDb(Guid simulationId, SimulationResult model) {

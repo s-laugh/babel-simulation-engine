@@ -22,15 +22,19 @@ namespace maternity_benefits
                 MaxWeeklyAmount = simulationCase.MaxWeeklyAmount,
                 Percentage = simulationCase.Percentage
             };
+
             var rulePersons = persons.Select(x => new Rule.MaternityBenefitsPerson() {
                 Id = x.Id,
                 AverageIncome = x.AverageIncome
             }).ToList();
+
             var rulesReq = new Rule.MaternityBenefitsBulkRequest() {
                 Rule = rule,
                 Persons = rulePersons
             };
+            
             var result =  _rulesApi.Execute<Rule.MaternityBenefitsBulkResponse>(ENDPOINT, rulesReq);
+            
             return result.ResponseDict.ToDictionary(x => x.Key, y => y.Value.Amount);
         }
     }

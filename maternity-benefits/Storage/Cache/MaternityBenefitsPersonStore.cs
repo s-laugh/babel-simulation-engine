@@ -34,5 +34,9 @@ namespace maternity_benefits.Storage.Cache
         public void Clear() {
             _cache.Set(cacheKeyPersons, new List<MaternityBenefitsPerson>());
         }
+
+        public void DeletePerson(Guid id) {
+            throw new NotImplementedException();
+        }
     }
 }
