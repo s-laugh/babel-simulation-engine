@@ -64,7 +64,7 @@ namespace esdc_simulation_api
 
             // Test option
             var testVal = Configuration["TestValue"] ?? 
-                Environment.GetEnvironmentVariable("test_value");
+                Environment.GetEnvironmentVariable("TEST_VALUE");
 
             var testOptions = new TestOptions() {
                 TestValue = testVal
