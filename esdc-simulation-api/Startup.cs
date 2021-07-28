@@ -62,18 +62,9 @@ namespace esdc_simulation_api
             
             services.AddScoped<IRestClient, RestSharp.RestClient>();
 
-            // Test option
-            var testVal = Configuration["TestValue"] ?? 
-                Environment.GetEnvironmentVariable("testValue");
-
-            var testOptions = new TestOptions() {
-                TestValue = testVal
-            };
-            services.AddSingleton<IOptions<TestOptions>>(x => Options.Create(testOptions));
-
             // Rules options
             var rulesUrl = Configuration["RulesOptions:Url"] ?? 
-                Environment.GetEnvironmentVariable("rulesUrl");
+                Environment.GetEnvironmentVariable("RULES_URL");
 
             var rulesOptions = new RulesOptions() {
                 Url = rulesUrl
@@ -82,7 +73,7 @@ namespace esdc_simulation_api
 
             // DB injection
             string connectionString = Configuration.GetConnectionString("DefaultDB") ??
-                Environment.GetEnvironmentVariable("connectionString");
+                Environment.GetEnvironmentVariable("DEFAULT_DB");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("esdc-simulation-api")));
         }
 
