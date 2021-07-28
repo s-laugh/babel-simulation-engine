@@ -5,6 +5,7 @@
 
 .vscode
 todo.txt
+appsettings.Development.json
 appsettings.Production.json
 
 # User-specific files
