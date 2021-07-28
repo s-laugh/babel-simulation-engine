@@ -30,7 +30,7 @@ jobs:
       
       - name: docker build and push client
         run: |
-          docker build --build-arg TEST_VALUE=${{secrets.MOCK_TEST_VALUE}} -t babelpdereg.azurecr.io/esdcsimulationapimock:latest .
+          docker build --build-arg -t babelpdereg.azurecr.io/esdcsimulationapimock:latest .
           docker tag babelpdereg.azurecr.io/esdcsimulationapimock:latest babelpdereg.azurecr.io/esdcsimulationapimock:$BUILD_NUMBER
           docker push babelpdereg.azurecr.io/esdcsimulationapimock:latest
           docker push babelpdereg.azurecr.io/esdcsimulationapimock:$BUILD_NUMBER
