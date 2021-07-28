@@ -62,6 +62,15 @@ namespace esdc_simulation_api
             
             services.AddScoped<IRestClient, RestSharp.RestClient>();
 
+            // Test option
+            var testVal = Configuration["TestValue"] ?? 
+                Environment.GetEnvironmentVariable("test_value");
+
+            var testOptions = new TestOptions() {
+                TestValue = testVal
+            };
+            services.AddSingleton<IOptions<TestOptions>>(x => Options.Create(testOptions));
+
             // Rules options
             var rulesUrl = Configuration["RulesOptions:Url"] ?? 
                 Environment.GetEnvironmentVariable("rulesUrl");
