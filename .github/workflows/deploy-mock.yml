@@ -23,7 +23,7 @@ jobs:
         run: echo Build number is $BUILD_NUMBER   
       - uses: azure/docker-login@v1
         with:
-          login-server: babelpdereg.azurecr.io.azurecr.io
+          login-server: babelpdereg.azurecr.io
           username: ${{ secrets.ACR_BABEL_USERNAME }}
           password: ${{ secrets.ACR_BABEL_PASSWORD }}
       - uses: actions/checkout@v1
