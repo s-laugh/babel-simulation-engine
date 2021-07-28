@@ -55,6 +55,8 @@ Ensure the config settings are properly set in the proper appsettings.XXX.json f
 - ConnectionStrings.DefaultDB: this is the connection string for the database that stores the simulation data and results.
 - RulesOptions.Url: This is the host URL for the Rules Engine
 
+* For deployments, the configs are handled in the Azure App Services, and are injected as environment variables.
+
 ### Running Locally
 
 - `cd` into the main solution folder
