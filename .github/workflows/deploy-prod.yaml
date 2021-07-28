@@ -1,4 +1,4 @@
-name: Deploy Mock
+name: Deploy Prod
 
 on: workflow_dispatch
 
@@ -7,7 +7,7 @@ jobs:
       name: Publish and Deploy
       env:
         ACR_SERVER: babelpdereg.azurecr.io
-        APP_NAME: esdcsimulationapimock
+        APP_NAME: esdcsimulationapi
       runs-on: ubuntu-latest
       steps:
       - name: Generate build number
@@ -32,5 +32,3 @@ jobs:
           docker tag ${{env.ACR_SERVER}}/${{env.APP_NAME}}:latest ${{env.ACR_SERVER}}/${{env.APP_NAME}}:$BUILD_NUMBER
           docker push ${{env.ACR_SERVER}}/${{env.APP_NAME}}:latest
           docker push ${{env.ACR_SERVER}}/${{env.APP_NAME}}:$BUILD_NUMBER
-
-
