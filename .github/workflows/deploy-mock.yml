@@ -8,7 +8,6 @@ jobs:
       env:
         ACR_SERVER: babelpdereg.azurecr.io
         APP_NAME: esdcsimulationapimock
-      if: github.event_name == 'push'
       runs-on: ubuntu-latest
       steps:
       - name: Generate build number
