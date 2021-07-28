@@ -64,7 +64,7 @@ namespace esdc_simulation_api
 
             // Test option
             var testVal = Configuration["TestValue"] ?? 
-                Environment.GetEnvironmentVariable("TEST_VALUE");
+                Environment.GetEnvironmentVariable("testValue");
 
             var testOptions = new TestOptions() {
                 TestValue = testVal
@@ -81,7 +81,8 @@ namespace esdc_simulation_api
             services.AddSingleton<IOptions<RulesOptions>>(x => Options.Create(rulesOptions));
 
             // DB injection
-            string connectionString = Configuration.GetConnectionString("DefaultDB");
+            string connectionString = Configuration.GetConnectionString("DefaultDB") ??
+                Environment.GetEnvironmentVariable("connectionString");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("esdc-simulation-api")));
         }
 
